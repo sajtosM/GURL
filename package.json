@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "jsdom": "^15.2.1",
+    "readability": "mozilla/readability"
+  }
+}
