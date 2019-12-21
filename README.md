@@ -1,4 +1,4 @@
 # GURL
-## The Grand unified Read List
+## The Grand Unified Read List
 
 `IN DEVELOPMENT`
