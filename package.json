@@ -1,6 +1,28 @@
 {
+  "name": "gurl",
+  "version": "1.0.0",
+  "description": "Grand Unified Read List",
+  "main": "index.js",
   "dependencies": {
     "jsdom": "^15.2.1",
     "readability": "mozilla/readability"
-  }
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sajtosM/GURL.git"
+  },
+  "keywords": [
+    "Readlist"
+  ],
+  "author": "sajtosM",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sajtosM/GURL/issues"
+  },
+  "homepage": "https://github.com/sajtosM/GURL#readme"
 }
