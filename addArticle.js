@@ -3,7 +3,9 @@ const Readability = require('readability');
 const fs = require('fs');
 const path = require('path');
 const JSDOM = require('jsdom').JSDOM;
+const Sentiment = require('sentiment');
 
+var senti = ''
 
 function buildPage(article, URL) {
     //Load the css
@@ -100,6 +102,61 @@ function getImage(URL) {
 }
 
 
+/**
+ * Gets the sentiment of the article
+ *
+ * @param {Article} article
+ * @returns
+ */
+function sentimentAN(article) {
+    let sentiment = new Sentiment();
+    let result = sentiment.analyze(article.textContent);
+    return result;
+}
+
+
+function symbolSearch(query) {
+    // https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=BA&apikey=demo
+    const https = require('https');
+    return https.get(`https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${query}&apikey=3X6NMLT8N0XLQJGB`, (resp) => {
+        let data = '';
+
+        resp.on('data', (chunk) => {
+            data += chunk;
+        });
+        resp.on('end', () => {
+            console.log(query);
+            console.table(JSON.parse(data).bestMatches.filter(b => b['9. matchScore'] > 0.6));
+        });
+    }).on('error', (err) => {
+        console.log('Error: ' + err.message);
+    });
+}
+
+function findSymbols(article) {
+    let regexp = /\b[A-Z][A-Z]+\b/g;
+    let array = [...article.textContent.matchAll(regexp)].map(x => x[0]);
+
+    let regexp2 = /([A-Z]{1,7})\w+/g;
+    array = array.concat([...(article.title + '\n' + article.excerpt).matchAll(regexp2)].map(x => x[0]));
+    array = [...new Set(array)];
+    let topFile = fs.readFileSync('./data/top100.csv').toString();
+    let topSymbols = [...topFile.matchAll(/.+\((.+)\)/g)];
+    var first = 0;
+    let mSymbols = array.map(function (sSym) {
+        if (/it|no|we|a|an|the/i.test(sSym) || sSym.length < 4) {
+            return;
+        }
+        if (topSymbols.map(x => x[0]).filter(topSymbol => (new RegExp(sSym)).test(topSymbol)).length > 0) {
+            if (first < 5) {
+                first++;
+                return symbolSearch(sSym);
+            }
+        }
+    })
+}
+
+
 function addArticle(URL) {
     https.get(URL, (resp) => {
         let data = '';
@@ -114,7 +171,12 @@ function addArticle(URL) {
             let reader = new Readability(doc.window.document);
             let article = reader.parse();
             let fullPath = path.join(__dirname, 'articles/', article.title.replace(/\ /gi, '_') + '.html');
-            var page = buildPage(article, URL);
+            let page = buildPage(article, URL);
+            let oSentiment = sentimentAN(article);
+            senti = (oSentiment.score > 0 ? '👍' : '👎') + oSentiment.score;
+            console.log(article.title + '\n' + article.excerpt);
+            console.log(senti)
+            let symbols = findSymbols(article);
             // page = await downloadAllImages(page); TODO:
             fs.writeFileSync(fullPath, page);
         });

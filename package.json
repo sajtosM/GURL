@@ -5,12 +5,14 @@
   "main": "index.js",
   "dependencies": {
     "jsdom": "^15.2.1",
-    "readability": "mozilla/readability"
+    "readability": "mozilla/readability",
+    "sentiment": "^5.0.2"
   },
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "serve": "node server.js"
   },
   "repository": {
     "type": "git",
