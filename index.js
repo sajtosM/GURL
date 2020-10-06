@@ -1,11 +1,9 @@
-const { addArticle } = require("./addArticle");
+const { getFeed } = require('./getRssFeed');
 
 if (process.argv[2]) {
-    var URL = process.argv[2];
-    addArticle(URL);
+    let URL = process.argv[2];
+    getFeed(URL);
 } else {
-    console.error('Enter an URL');
-    addArticle('https://www.barrons.com/articles/facebook-stock-slides-as-analysts-realize-just-how-tough-ad-business-is-51587492585?siteid=yhoof2');
-       
+    console.warn('Call the function with an RSS url.');
+    console.warn('Like: node index.js "https://old.reddit.com/r/wallstreetbets/top/.rss?sort=top&t=day"');
 }
-
