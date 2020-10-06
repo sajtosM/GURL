@@ -4,15 +4,20 @@ const { Readability } = require('readability');
 const fs = require('fs');
 const path = require('path');
 const JSDOM = require('jsdom').JSDOM;
+const readingTime = require('reading-time');
 const Sentiment = require('sentiment');
 
 var senti = '';
 
-function buildPage(article, URL) {
+function buildPage(article, URL, noLimit) {
     //Load the css
-    let css = fs.readFileSync(path.join(__dirname, 'css/aboutReader.css'));
+    // let css = fs.readFileSync(path.join(__dirname, 'css/aboutReader.css'));
     if (/Disclaimer/.test(article.content)) {
         article.content = '';
+    }
+
+    if (article.readingTime.minutes > 2 && !noLimit) {
+        article.readingTime.tooMuch = true;
     }
     // article.symbols = article.symbols ? JSON.stringify(article.symbols) : '';
     if (article.symbols && article.symbols.length > 0) {
@@ -41,12 +46,12 @@ function buildPage(article, URL) {
         <body class="sepia serif loaded">
             <div class="container content-width3" style="--font-size:22px;">
                 <div class="header reader-header reader-show-element">
-                    <a class="domain reader-domain" href="${URL}">LINK</a>
-                    <div class="domain-border"></div>
-                    <h1 class="reader-title">${article.title}</h1>
-                        <div class="credits reader-credits">${article.siteName} <!--TODO:--></div> 
+                <div class="domain-border"></div>
+                <h1 class="reader-title"> <a class="domain reader-domain" href="${URL}">${article.title}</a></h1>
+                <!--<a class="domain reader-domain" href="\${URL}">LINK</a>-->
+                <div class="credits reader-credits">${article.siteName} <!--TODO:--></div> 
                         <div class="meta-data">
-                            <!-- <div class="reader-estimated-time"></div> TODO: -->
+                            <div class="reader-estimated-time">${article.readingTime.text}</div>
                             <div class="reader-estimated-time sentiment">Sentiment: ${article.sentiment ? ((article.sentiment.score > 0 ? '👍' : '👎') + article.sentiment.score) : ''}</div>
                             <div class="reader-estimated-time symbols">
                                 <b>Symbols: </b>
@@ -55,13 +60,13 @@ function buildPage(article, URL) {
                           </div>
                         </div>
                 </div>
-                <style>${css}</style>
+                <!-- <style>\${css}</style> -->
 
                 <hr>
 
                 <div class="content">
                     <div class="moz-reader-content line-height5 reader-show-element">
-                        ${article.content}
+                        ${!article.readingTime.tooMuch ? article.content : article.excerpt}
                     </div>
                 </div>
 
@@ -194,7 +199,7 @@ function findSymbols(article) {
 }
 
 
-function handleArticleReceive(data, URL, oRss, resolve) {
+function handleArticleReceive(data, URL, oRss, resolve, noLimit) {
     var doc = new JSDOM(data, {
         url: URL,
     });
@@ -225,8 +230,13 @@ function handleArticleReceive(data, URL, oRss, resolve) {
         article.sentiment = oSentiment;
         console.log(article.title + '\n' + article.excerpt);
         console.log(senti);
+
         mSymbolPromises = findSymbols(article);
-        page = buildPage(article, URL);
+
+        let timeToRead = readingTime(article.textContent);
+        article.readingTime = timeToRead;
+
+        page = buildPage(article, URL, noLimit);
         fullPath = path.join(__dirname, 'articles/', article.title.replace(/ /gi, '_') + '.html');
     }
 
@@ -241,7 +251,7 @@ function handleArticleReceive(data, URL, oRss, resolve) {
         Promise.all(mSymbolPromises).then(function (mSymbols) {
             // debugger
             article.symbols = mSymbols;
-            page = buildPage(article, URL);
+            page = buildPage(article, URL, noLimit);
             // debugger
             resolve(page);
         });
@@ -256,7 +266,7 @@ function handleArticleReceive(data, URL, oRss, resolve) {
  * @param {object} oRss rss entry
  * @returns {Promise}
  */
-function addArticle(URL, oRss) {
+function addArticle(URL, oRss, noLimit) {
     return new Promise(function (resolve) {
         const handler = /http:\/\//.test(URL) ? http : https;
         handler.get(URL, (resp) => {
@@ -265,7 +275,7 @@ function addArticle(URL, oRss) {
                 data += chunk;
             });
             resp.on('end', async () => {
-                handleArticleReceive(data, URL, oRss, resolve);
+                handleArticleReceive(data, URL, oRss, resolve, noLimit);
             });
             resp.on('error', (err) => {
                 resolve('');

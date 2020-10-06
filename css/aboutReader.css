@@ -543,6 +543,7 @@ button {
   display: none;
   font-size: 1em;
   line-height: 1.6em;
+  /* background-color: #f5f0e4; */
 }
 
 .moz-reader-content.line-height1 {

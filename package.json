@@ -6,6 +6,7 @@
   "dependencies": {
     "jest": "^26.5.2",
     "jsdom": "^15.2.1",
+    "nodemailer": "^6.4.13",
     "readability": "mozilla/readability",
     "reading-time": "^1.2.0",
     "rss-parser": "^3.9.0",
