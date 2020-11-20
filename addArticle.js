@@ -200,11 +200,15 @@ function findSymbols(article) {
 
 
 function handleArticleReceive(data, URL, oRss, resolve, noLimit) {
-    var doc = new JSDOM(data, {
-        url: URL,
-    });
-    let reader = new Readability(doc.window.document);
-    let article = reader.parse();
+    let article = null;
+    // filter PDF
+    if (!/\.pdf|.\png|\.jpg/.test(URL)) {
+        var doc = new JSDOM(data, {
+            url: URL,
+        });
+        let reader = new Readability(doc.window.document);
+        article = reader.parse();
+    }
     let page = '';
     let fullPath = path.join(__dirname, 'articles/', (new Date().toISOString()) + '.html');
     let mSymbolPromises = [];
