@@ -7,6 +7,14 @@ const { addArticle } = require('./addArticle');
 
 const parser = new Parser();
 
+/**
+ * Get an RSS feed
+ *
+ * @param {string} sUrl url to a string
+ * @param {integer} nLimit maximum amount of articles to get
+ * @param {boolean} bSendMail send the mail to the email defined in the config or not
+ * @returns
+ */
 async function getFeed(sUrl, nLimit, bSendMail) {
     return new Promise(async function (getFeedResolver) {
         let mFeed = await parser.parseURL(sUrl);
