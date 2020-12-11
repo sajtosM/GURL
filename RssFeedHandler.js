@@ -105,7 +105,13 @@ class RssFeedHandler {
      * @memberof RssFeedHandler
      */
     writeToThePath(emailContent) {
-        let fullPath = path.join(__dirname, 'articles/', this.sTitle.replace(/ /gi, '_') + '.html');
+        const sDirectory = path.join(__dirname, 'articles/');
+        let fullPath = path.join(sDirectory, this.sTitle.replace(/ /gi, '_') + '.html');
+        
+        if (!fs.existsSync(sDirectory)){
+            fs.mkdirSync(sDirectory);
+        }
+        
         fs.writeFileSync(fullPath, emailContent);
     }
 
