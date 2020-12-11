@@ -4,7 +4,6 @@
   "description": "Grand Unified Read List",
   "main": "index.js",
   "dependencies": {
-    "jest": "^26.6.3",
     "jsdom": "^15.2.1",
     "nodemailer": "^6.4.13",
     "ora": "^5.1.0",
@@ -13,7 +12,9 @@
     "rss-parser": "^3.9.0",
     "sentiment": "^5.0.2"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "jest": "^26.6.3"
+  },
   "scripts": {
     "lint": "eslint .",
     "jest": "jest",
