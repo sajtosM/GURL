@@ -1,6 +1,7 @@
 const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
+const ora = require('ora');
 
 let config;
 try {
@@ -10,30 +11,37 @@ try {
 }
 
 function sendEmail(content, title) {
+    return new Promise(function (handleEmailSent) {
+        let spinner = ora(`Sending mail to ${config.target}`).start();
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: config.auth.user,
+                pass: config.auth.pass
+            }
+        });
 
+        const mailOptions = {
+            from: config.auth.user,
+            to: config.target,
+            subject: title || 'Hírek',
+            html: content
+        };
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: config.auth.user,
-            pass: config.auth.pass
-        }
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                spinner.fail(`Sending mail to ${config.target} | Failed`);
+                console.log(error);
+                handleEmailSent(error);
+            } else {
+                spinner.succeed(`Sending mail to ${config.target} | Email sent: ${info.response}`);
+                handleEmailSent(info);
+            }
+        });
     });
 
-    const mailOptions = {
-        from: 'gorcsew.ivan@gmail.com',
-        to: config.target,
-        subject: title || 'Hírek',
-        html: content
-    };
 
-    transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-            console.log(error);
-        } else {
-            console.log('Email sent: ' + info.response);
-        }
-    });
+
 }
 
 exports.sendEmail = sendEmail;

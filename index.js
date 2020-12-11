@@ -1,11 +1,16 @@
-const { getFeed } = require('./getRssFeed');
+const { RssFeedHandler } = require('./RssFeedHandler');
 
 if (process.argv[2]) {
-    console.log(process.argv);
     let URL = process.argv[2];
-    let nLimit = process.argv[3] ? process.argv[3] : undefined;
     let bSendMail = process.argv.some((argv) => argv === '--sendMail');
-    getFeed(URL, nLimit, bSendMail);
+    let nLimit;
+    if (!isNaN(process.argv[3])) {
+        nLimit = process.argv[3];
+    } else if (!isNaN(process.argv[4])) {
+        nLimit = process.argv[4];
+    }
+    const rssFeed = new RssFeedHandler(URL, nLimit);
+    rssFeed.getFeed(bSendMail);
 } else {
     console.warn('Call the function with an RSS url.');
     console.warn('Like: node index.js "https://reddit.com/r/wallstreetbets/top/.rss?sort=top&t=day"');

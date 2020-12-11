@@ -6,6 +6,8 @@
     "configurations": [
 
 
+
+
         {
             "type": "node",
             "request": "launch",
@@ -34,6 +36,15 @@
                 "<node_internals>/**"
             ],
             "program": "${workspaceFolder}/getRssFeed.test.js"
-        }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "send mail Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/sendEmail.js"
+        },
     ]
 }

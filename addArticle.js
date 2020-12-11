@@ -6,8 +6,9 @@ const path = require('path');
 const JSDOM = require('jsdom').JSDOM;
 const readingTime = require('reading-time');
 const Sentiment = require('sentiment');
+const ora = require('ora');
 
-var senti = '';
+let senti = '';
 
 function buildPage(article, URL, noLimit) {
     //Load the css
@@ -79,65 +80,6 @@ function buildPage(article, URL, noLimit) {
     `;
     return page;
 }
-// /**
-//  * Downloads all images of a HTML page
-//  *
-//  * @param {String} page html string of the page
-//  */
-// async function downloadAllImages(page) {
-//     var images = page.match(/<img((?:[^<>])*)>/gi);
-//     var base64ImagesList = [];
-//     await getAllImages(images).then(function (base64Images) {
-//         base64ImagesList = base64Images;
-//     }); // jshint ignore:line
-//     base64ImagesList.forEach(function (imageReplaceObj) {
-//         page = page.replace(imageReplaceObj.oldImage, imageReplaceObj.newImage);
-//     });
-//     return page;
-// }
-// /**
-//  * Gets all images
-//  *
-//  * @param {*} images
-//  * @returns
-//  */
-// async function getAllImages(images) {
-//     return Promise.all(images.map(async function (image, i) {
-//         var imageReplaceObj = { oldImage: image, index: i, newImage: image };
-//         let imgUrl = image.match(/src="(.+?)"/)[1];
-//         var baseImg = await getImage(imgUrl);
-//         function replacer(match) {
-//             var type = /(?:(?:https?:\/\/))[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,4}\b(?:[-a-zA-Z0-9@:%_\+.~#?&\/=]*(\.jpg|\.png|\.jpeg))/g.exec(match)[1];
-//             return `src="${baseImg}"`;
-//         }
-//         imageReplaceObj.newImage = image.replace(/src="(.+?)"/, replacer);
-//         return imageReplaceObj;
-//     }));
-// }
-// /**
-//  * Http gets an image
-//  *
-//  * @param {URL} URL
-//  */
-// function getImage(URL) {
-//     return new Promise(resolve => {
-
-//         https.get(URL, (resp) => {
-//             resp.setEncoding('base64');
-//             body = 'data:' + resp.headers['content-type'] + ';base64,';
-//             resp.on('data', (data) => { body += data });
-//             resp.on('end', () => {
-//                 resolve(body);
-//             });
-//         }).on('error', (e) => {
-//             console.log(`Got error: ${e.message}`);
-//         });
-
-
-
-//     });
-// }
-
 
 /**
  * Gets the sentiment of the article
@@ -164,8 +106,8 @@ function symbolSearch(query) {
             });
             resp.on('end', () => {
                 Resolve(JSON.parse(data).bestMatches.filter(b => b['9. matchScore'] > 0.6));
-                console.log(query);
-                console.table(JSON.parse(data).bestMatches.filter(b => b['9. matchScore'] > 0.6));
+                // console.log(query);
+                // console.table(JSON.parse(data).bestMatches.filter(b => b['9. matchScore'] > 0.6));
             });
         }).on('error', (err) => {
             console.log('Error: ' + err.message);
@@ -199,7 +141,8 @@ function findSymbols(article) {
 }
 
 
-function handleArticleReceive(data, URL, oRss, resolve, noLimit) {
+function handleArticleReceive(data, URL, oRss, resolve, noLimit, spinner) {
+    spinner.text = `Loading ${oRss.title} | Parsing Readability`;
     let article = null;
     // filter PDF
     if (!/\.pdf|.\png|\.jpg/.test(URL)) {
@@ -227,24 +170,29 @@ function handleArticleReceive(data, URL, oRss, resolve, noLimit) {
         } else {
             page = `<a href="${URL}">[Link]</a>`;
         }
+        spinner.succeed(`Loading ${oRss.title} | Done`);
     } else {
+        
+        spinner.text = `Loading ${oRss.title} | Estimating Read time`;
+        let timeToRead = readingTime(article.textContent);
+        article.readingTime = timeToRead;
+        
+        spinner.text = `Loading ${oRss.title} | Building Page`;
+        page = buildPage(article, URL, noLimit);
+        fullPath = path.join(__dirname, 'articles/', article.title.replace(/ /gi, '_') + '.html');
+        
+        spinner.text = `Loading ${oRss.title} | Finding Symbols`;
+        mSymbolPromises = findSymbols(article);
 
+        spinner.text = `Loading ${oRss.title} | Analyzing Sentiment`;
         let oSentiment = sentimentAN(article);
         senti = (oSentiment.score > 0 ? '👍' : '👎') + oSentiment.score;
         article.sentiment = oSentiment;
+        spinner.succeed(`Loading ${oRss.title} | Done`);
         console.log(article.title + '\n' + article.excerpt);
         console.log(senti);
-
-        mSymbolPromises = findSymbols(article);
-
-        let timeToRead = readingTime(article.textContent);
-        article.readingTime = timeToRead;
-
-        page = buildPage(article, URL, noLimit);
-        fullPath = path.join(__dirname, 'articles/', article.title.replace(/ /gi, '_') + '.html');
     }
 
-    // page = await downloadAllImages(page); TODO:
     // If it is RSS they get written altogether
     if (!oRss) {
         fs.writeFileSync(fullPath, page);
@@ -270,7 +218,7 @@ function handleArticleReceive(data, URL, oRss, resolve, noLimit) {
  * @param {object} oRss rss entry
  * @returns {Promise}
  */
-function addArticle(URL, oRss, noLimit) {
+function addArticle(URL, oRss, noLimit, spinner) {
     return new Promise(function (resolve) {
         const handler = /http:\/\//.test(URL) ? http : https;
         handler.get(URL, (resp) => {
@@ -279,7 +227,9 @@ function addArticle(URL, oRss, noLimit) {
                 data += chunk;
             });
             resp.on('end', async () => {
-                handleArticleReceive(data, URL, oRss, resolve, noLimit);
+                spinner = ora(`Loading ${oRss.title}`).start();
+                spinner.text = `Loading ${oRss.title} | Received article`;
+                handleArticleReceive(data, URL, oRss, resolve, noLimit, spinner);
             });
             resp.on('error', (err) => {
                 resolve('');

@@ -4,9 +4,10 @@
   "description": "Grand Unified Read List",
   "main": "index.js",
   "dependencies": {
-    "jest": "^26.5.2",
+    "jest": "^26.6.3",
     "jsdom": "^15.2.1",
     "nodemailer": "^6.4.13",
+    "ora": "^5.1.0",
     "readability": "mozilla/readability",
     "reading-time": "^1.2.0",
     "rss-parser": "^3.9.0",
@@ -14,7 +15,9 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "jest",
+    "lint": "eslint .",
+    "jest": "jest",
+    "test": "npm run lint && npm run jest",
     "start": "node index.js",
     "serve": "node server.js"
   },
