@@ -3,7 +3,7 @@
 
 ## Installation
 
-Install the libs `npm install` or `yarn`
+Install the libs `npm install` or `yarn`.
 
 ### Setup the email client
 
