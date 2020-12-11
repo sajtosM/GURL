@@ -25,6 +25,7 @@
             "error",
             "always"
         ],
+        "no-async-promise-executor": "off",
         "no-console": "off"
     }
 }
