@@ -8,9 +8,9 @@ const cli = meow(`
 
 	Options
 	  --init, -i  Initialize the config.json
-	  --noMail, -m  Initialize the config.json
-	  --showAll, -a  Initialize the config.json
-	  --limit, -l  Limit for the 
+	  --noMail, -m  Send no mail
+	  --showAll, -a  Send the full article in the email
+	  --limit, -l  Maximum number of articles to be displayed
 
 	Examples
 	  $ node gurl --init
