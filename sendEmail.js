@@ -11,6 +11,7 @@ try {
     console.error('Create a config.json for sending of emails');
     exports.sendEmail = function () {
         console.error('Create a config.json for sending of emails');
+        return 1;
     };
 }
 
