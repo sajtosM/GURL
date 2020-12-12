@@ -56,19 +56,19 @@ it('test setting noLimit', function () {
 
 // Too much spam
 
-// it('Test RSS get', async () => {
-//     expect.assertions(1);
-//     const rssFeed = new RssFeedHandler('', 1);
-//     const res = await rssFeed.sendEmail(`Egg and bacon
-//     Egg, sausage and bacon
-//     Egg and Spam
-//     Egg, bacon and Spam
-//     Egg, bacon, sausage and Spam
-//     Spam, bacon, sausage and Spam
-//     Spam, egg, Spam, Spam, bacon and Spam
-//     Spam, Spam, Spam, egg and Spam, SPAM! SPAM`    );
-//     expect(res.accepted.length).toBeGreaterThanOrEqual(1);
-// });
+it('Test RSS get', async () => {
+    expect.assertions(1);
+    const rssFeed = new RssFeedHandler('', 1);
+    const res = await rssFeed.sendEmail(`Egg and bacon
+    Egg, sausage and bacon
+    Egg and Spam
+    Egg, bacon and Spam
+    Egg, bacon, sausage and Spam
+    Spam, bacon, sausage and Spam
+    Spam, egg, Spam, Spam, bacon and Spam
+    Spam, Spam, Spam, egg and Spam, SPAM! SPAM`, 'THIS IS SPAM BUY SPAM SPAM');
+    expect(res.accepted.length).toBeGreaterThanOrEqual(1);
+});
 
 it('Test test Feed parser ', async () => {
     expect.assertions(3);

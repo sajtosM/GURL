@@ -218,8 +218,9 @@ class RssFeedHandler {
      * @returns {object} result of the email
      * @memberof RssFeedHandler
      */
-    sendEmail(emailContent) {
-        return sendEmail(emailContent, `Rss feed - ${this.sTitle}`);
+    sendEmail(emailContent, sTile) {
+        sTile = sTile ? sTile : `Rss feed - ${this.sTitle}`;
+        return sendEmail(emailContent, sTile);
     }
 
     /**
@@ -247,7 +248,7 @@ class RssFeedHandler {
             <style>${css}</style>
         </div>
         `;
- 
+
 
         return emailContent;
     }

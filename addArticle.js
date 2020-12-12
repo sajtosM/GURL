@@ -7,8 +7,6 @@ const readingTime = require('reading-time');
 const Sentiment = require('sentiment');
 const ora = require('ora');
 
-let senti = '';
-
 function buildPage(article, URL, noLimit) {
     //Load the css
     // let css = fs.readFileSync(path.join(__dirname, 'css/aboutReader.css'));
@@ -182,11 +180,11 @@ function handleArticleReceive(data, URL, oRss, resolve, noLimit, spinner) {
 
         spinner.text = `Loading ${oRss.title} | Analyzing Sentiment`;
         let oSentiment = sentimentAN(article);
-        senti = (oSentiment.score > 0 ? '👍' : '👎') + oSentiment.score;
         article.sentiment = oSentiment;
-        spinner.succeed(`Loading ${oRss.title} | Done`);
-        console.log(article.title + '\n' + article.excerpt);
-        console.log(senti);
+        // senti = (oSentiment.score > 0 ? '👍' : '👎') + oSentiment.score;
+        // console.log(article.title + '\n' + article.excerpt);
+        // console.log(senti);
+        spinner.succeed(`Loading ${article.title} |  Done`);
     }
 
     if (mSymbolPromises.length === 0) {
@@ -229,7 +227,7 @@ function addArticle(URL, oRss, noLimit, spinner) {
             });
             resp.on('error', (err) => {
                 resolve('');
-                console.log('Error: ' + err.message);
+                console.error('Error: ' + err.message);
             });
         });
     });
