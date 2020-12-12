@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/sajtosM/GURL.svg?branch=master)](https://travis-ci.com/sajtosM/GURL) 
+![CodeQL](https://github.com/sajtosM/GURL/workflows/CodeQL/badge.svg?branch=master)
 
 # G.U.R.L.
 > The Grand Unified Read List
