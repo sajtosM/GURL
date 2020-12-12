@@ -57,10 +57,10 @@ If you want to limit the number of the Rss entries `--limit`:
 ```sh
 node gurl "https://reddit.com/r/wallstreetbets/.rss" --limit 5
 ```
-Disable the limitation on read time. The text will not concatenate at 2 Minutes `--noLimit`:
+Disable the limitation on read time. The text will not concatenate at 2 Minutes `--showAll`:
 
 ```sh
-node gurl "https://reddit.com/r/wallstreetbets/.rss" --noLimit
+node gurl "https://reddit.com/r/wallstreetbets/.rss" --showAll
 ```
 
 ### Cron
