@@ -24,7 +24,7 @@ yarn install
 Run with `--init` to set up the configuration.
 
 ```sh
-node index.js --init
+node gurl --init
 ```
 
 The `config.json` should look like this:
@@ -43,24 +43,24 @@ The `config.json` should look like this:
 # <img src="media/usage.gif" title="G.U.R.L." alt="G.U.R.L. usage" width="530">
 
 ```sh
-node index.js "https://reddit.com/r/news/.rss"
+node gurl "https://reddit.com/r/news/.rss"
 ```
 
 If you don't want to send a mail `--noMail`:
 
 ```sh
-node index.js "https://reddit.com/r/funny/.rss" --noMail
+node gurl "https://reddit.com/r/funny/.rss" --noMail
 ```
 
-If you want to limit the number of the Rss entries:
+If you want to limit the number of the Rss entries `--limit`:
 
 ```sh
-node index.js "https://reddit.com/r/wallstreetbets/.rss" 5
+node gurl "https://reddit.com/r/wallstreetbets/.rss" --limit 5
 ```
-Disable the limitation on read time. The text will not concatenate at 2 Minutes.
+Disable the limitation on read time. The text will not concatenate at 2 Minutes `--noLimit`:
 
 ```sh
-node index.js "https://reddit.com/r/wallstreetbets/.rss" --noLimit
+node gurl "https://reddit.com/r/wallstreetbets/.rss" --noLimit
 ```
 
 ### Cron
@@ -73,7 +73,7 @@ crontab -e
 Add an entry. This for example sends a newsletter at 6:00 with 25 entries from the hackernews daily top.
 
 ```sh
-0 6 * * * cd /home/ubuntu/Project/GURL && node index.js "https://hnrss.org/newest?points=100" 25
+0 6 * * * cd /home/ubuntu/Project/GURL && node gurl "https://hnrss.org/newest?points=100" 25
 ```
 
 ```sh
@@ -101,8 +101,8 @@ Add an entry. This for example sends a newsletter at 6:00 with 25 entries from t
 # 
 # m h  dom mon dow   command
 
-0 6 * * * cd /home/ubuntu/Project/GURL && node index.js "https://hnrss.org/newest?points=100" 
-1 6 * * * cd /home/ubuntu/Project/GURL && node index.js "https://hang.hu/feed/" 5
-2 6 * * Fri  /home/ubuntu/Project/GURL && node index.js "https://www.atlasobscura.com/feeds/latest" 16
-2 6 * * Fri  /home/ubuntu/Project/GURL && node index.js "https://old.reddit.com/r/wallstreetbets/top/.rss?sort=top&t=day" 7
+0 6 * * * cd /home/ubuntu/Project/GURL && node gurl "https://hnrss.org/newest?points=100" 
+1 6 * * * cd /home/ubuntu/Project/GURL && node gurl "https://hang.hu/feed/" -l 5
+2 6 * * Fri  /home/ubuntu/Project/GURL && node gurl "https://www.atlasobscura.com/feeds/latest" -l 16
+2 6 * * Fri  /home/ubuntu/Project/GURL && node gurl "https://old.reddit.com/r/wallstreetbets/top/.rss?sort=top&t=day" -l 7
 ```
