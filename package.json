@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "jsdom": "^15.2.1",
+    "meow": "^8.0.0",
     "nodemailer": "^6.4.13",
     "ora": "^5.1.0",
     "readability": "mozilla/readability",
