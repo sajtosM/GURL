@@ -6,8 +6,12 @@ const ora = require('ora');
 let config;
 try {
     config = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json')));
+    exports.sendEmail = sendEmail;
 } catch (e) {
     console.error('Create a config.json for sending of emails');
+    exports.sendEmail = function () {
+        console.error('Create a config.json for sending of emails');
+    };
 }
 
 function sendEmail(content, title) {
@@ -43,5 +47,3 @@ function sendEmail(content, title) {
 
 
 }
-
-exports.sendEmail = sendEmail;

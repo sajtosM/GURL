@@ -16,7 +16,7 @@ it('Test setTile', function () {
     expect(testerRssFeed.sTitle).toBe('Title Test');
 });
 
-it('test reddit link', function () {
+it('Test reddit link', function () {
     const oRssHandler = new RssFeedHandler('https://reddit.com/r/wallstreetbets/top/.rss?sort=top&t=day', 1);
     expect(oRssHandler.bIsReddit).toBe(true);
 
@@ -28,7 +28,7 @@ it('test reddit link', function () {
     expect(sLink).toBe('http://testtest');
 });
 
-it('test get test no defined maximum', function () {
+it('Test get test no defined maximum', function () {
     const oRssHandler = new RssFeedHandler('https://hu.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom');
 
     expect(oRssHandler.noLimit).toBe(false);
@@ -39,7 +39,7 @@ it('test get test no defined maximum', function () {
     expect(mFeed[0].sLink).toBe('https://hu.wikipedia.org/wiki/Speci%C3%A1lis:FeedItem/featured/20201202000000/hu');
 });
 
-it('test get feed items', function () {
+it('Test get feed items', function () {
     const oRssHandler = new RssFeedHandler('https://hu.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom', 5);
 
     expect(oRssHandler.noLimit).toBe(false);
@@ -48,15 +48,14 @@ it('test get feed items', function () {
     expect(mFeed[0].sLink).toBe('https://hu.wikipedia.org/wiki/Speci%C3%A1lis:FeedItem/featured/20201202000000/hu');
 });
 
-it('test setting noLimit', function () {
+it('Test setting noLimit', function () {
     const oRssHandler = new RssFeedHandler('https://hu.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom', 5,true);
 
     expect(oRssHandler.noLimit).toBe(true);
 });
 
-// Too much spam
 
-it('Test RSS get', async () => {
+it('Test send email get', async () => {
     expect.assertions(1);
     const rssFeed = new RssFeedHandler('', 1);
     const res = await rssFeed.sendEmail(`Egg and bacon
@@ -87,7 +86,7 @@ it('Test RSS get Email Style', async () => {
     expect(emailContent).toBeDefined();
 });
 
-it('test wikipedia link', function () {
+it('Test wikipedia link', function () {
     const oRssHandler = new RssFeedHandler('https://hu.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom', 1);
     expect(oRssHandler.bIsReddit).toBe(false);
 
@@ -130,7 +129,7 @@ it('Test adding articles with no limit', async () => {
     expect(mPromises.length).toBe(mPromisesGeted.length);
 });
 
-it('test add content', function () {
+it('Test add content', function () {
     const oRssHandler = new RssFeedHandler('', 1);
 
     oRssHandler.addToFeedContent(`Egg and bacon
@@ -153,7 +152,7 @@ it('test add content', function () {
     //     Spam, Spam, Spam, egg and Spam, SPAM! SPAM`);
 });
 
-it('test render html', function () {
+it('Test render html', function () {
     const oRssHandler = new RssFeedHandler('', 1);
 
     oRssHandler.addToFeedContent(`Egg and bacon
@@ -168,8 +167,8 @@ it('test render html', function () {
     expect(oRssHandler.getHTMLFeedContent()).toMatch(/Egg, sausage and bacon/);
 });
 
-it('test writing', function () {
-    const oRssHandler = new RssFeedHandler('test', 1);
+it('Test writing', function () {
+    const oRssHandler = new RssFeedHandler('Test', 1);
 
     oRssHandler.writeToThePath(`Egg and bacon
     //     Egg, sausage and bacon
