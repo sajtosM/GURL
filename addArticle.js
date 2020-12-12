@@ -2,7 +2,6 @@ const https = require('https');
 const http = require('http');
 const { Readability } = require('readability');
 const fs = require('fs');
-const path = require('path');
 const JSDOM = require('jsdom').JSDOM;
 const readingTime = require('reading-time');
 const Sentiment = require('sentiment');
@@ -153,7 +152,6 @@ function handleArticleReceive(data, URL, oRss, resolve, noLimit, spinner) {
         article = reader.parse();
     }
     let page = '';
-    let fullPath = path.join(__dirname, 'articles/', (new Date().toISOString()) + '.html');
     let mSymbolPromises = [];
 
     if (!article || article.excerpt == null || !article.excerpt) {
@@ -166,21 +164,19 @@ function handleArticleReceive(data, URL, oRss, resolve, noLimit, spinner) {
                             </div>
                         </div>
                     </div>`;
-            fullPath = path.join(__dirname, 'articles/', oRss.title.replace(/ /gi, '_') + '.html');
         } else {
             page = `<a href="${URL}">[Link]</a>`;
         }
         spinner.succeed(`Loading ${oRss.title} | Done`);
     } else {
-        
+
         spinner.text = `Loading ${oRss.title} | Estimating Read time`;
         let timeToRead = readingTime(article.textContent);
         article.readingTime = timeToRead;
-        
+
         spinner.text = `Loading ${oRss.title} | Building Page`;
         page = buildPage(article, URL, noLimit);
-        fullPath = path.join(__dirname, 'articles/', article.title.replace(/ /gi, '_') + '.html');
-        
+
         spinner.text = `Loading ${oRss.title} | Finding Symbols`;
         mSymbolPromises = findSymbols(article);
 
@@ -193,10 +189,6 @@ function handleArticleReceive(data, URL, oRss, resolve, noLimit, spinner) {
         console.log(senti);
     }
 
-    // If it is RSS they get written altogether
-    if (!oRss) {
-        fs.writeFileSync(fullPath, page);
-    }
     if (mSymbolPromises.length === 0) {
         resolve(page);
     } else {
@@ -215,12 +207,16 @@ function handleArticleReceive(data, URL, oRss, resolve, noLimit, spinner) {
  * Gets an article
  *
  * @param {string} URL url to articles
- * @param {object} oRss rss entry
+ * @param {object} oRss rss entry 
+ * @param {boolean} resolve if the text should be concatenated
  * @returns {Promise}
  */
 function addArticle(URL, oRss, noLimit, spinner) {
     return new Promise(function (resolve) {
         const handler = /http:\/\//.test(URL) ? http : https;
+        if (!/http/.test(URL)) {
+            resolve('');
+        }
         handler.get(URL, (resp) => {
             let data = '';
             resp.on('data', (chunk) => {

@@ -56,6 +56,11 @@ If you want to limit the number of the Rss entries:
 ```sh
 node index.js "https://reddit.com/r/wallstreetbets/.rss" 5
 ```
+Disable the limitation on read time. The text will not concatenate at 2 Minutes.
+
+```sh
+node index.js "https://reddit.com/r/wallstreetbets/.rss" --noLimit
+```
 
 ### Cron
 

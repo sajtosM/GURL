@@ -23,7 +23,7 @@ if (process.argv.some((argv) => argv === '--init')) {
                 console.log(configFile);
                 rl.question('Do you want to save the config?(y/n) ', function (sYesNo) {
                     if (sYesNo.toLocaleLowerCase() === 'y') {
-                        fs.writeFileSync( path.join(__dirname,'config.json'), JSON.stringify(configFile));
+                        fs.writeFileSync(path.join(__dirname, 'config.json'), JSON.stringify(configFile));
                         process.exit(0);
                     }
                 });
@@ -34,13 +34,14 @@ if (process.argv.some((argv) => argv === '--init')) {
 } else if (process.argv[2]) {
     let URL = process.argv[2];
     let bSendMail = !process.argv.some((argv) => argv === '--noMail');
+    let bNoLimit = !process.argv.some((argv) => argv === '--noLimit');
     let nLimit;
     if (!isNaN(process.argv[3])) {
         nLimit = process.argv[3];
     } else if (!isNaN(process.argv[4])) {
         nLimit = process.argv[4];
     }
-    const rssFeed = new RssFeedHandler(URL, nLimit);
+    const rssFeed = new RssFeedHandler(URL, nLimit, bNoLimit);
     rssFeed.getFeed(bSendMail);
 } else {
     console.warn('Call the function with an RSS url.');

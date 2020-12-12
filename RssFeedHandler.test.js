@@ -28,10 +28,10 @@ it('test reddit link', function () {
     expect(sLink).toBe('http://testtest');
 });
 
-it('test get test no limit', function () {
+it('test get test no defined maximum', function () {
     const oRssHandler = new RssFeedHandler('https://hu.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom');
 
-    expect(oRssHandler.noLimit).toBe(true);
+    expect(oRssHandler.noLimit).toBe(false);
     expect(oRssHandler.nLimit).toBe(100);
 
     const mFeed = oRssHandler.getFeedItems(WIKI_TEST_FEED);
@@ -46,6 +46,12 @@ it('test get feed items', function () {
     const mFeed = oRssHandler.getFeedItems(WIKI_TEST_FEED);
     expect(mFeed.length).toBe(5);
     expect(mFeed[0].sLink).toBe('https://hu.wikipedia.org/wiki/Speci%C3%A1lis:FeedItem/featured/20201202000000/hu');
+});
+
+it('test setting noLimit', function () {
+    const oRssHandler = new RssFeedHandler('https://hu.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom', 5,true);
+
+    expect(oRssHandler.noLimit).toBe(true);
 });
 
 // Too much spam
@@ -100,10 +106,21 @@ it('Test RSS get wikipedia', async () => {
     expect(res).toBeDefined();
 });
 
-// TODO: add to assertion time
 it('Test adding articles', async () => {
     expect.assertions(2);
     const rssFeed = new RssFeedHandler('', 1);
+
+    const mFeed = [rssFeed.getFeedItems(WIKI_TEST_FEED)[0]];
+    const mPromises = rssFeed.addAllFeedItems(mFeed);
+    expect(mPromises.length).toBe(1);
+
+    const mPromisesGeted = rssFeed.getPromises();
+    expect(mPromises.length).toBe(mPromisesGeted.length);
+});
+
+it('Test adding articles with no limit', async () => {
+    expect.assertions(2);
+    const rssFeed = new RssFeedHandler('', 1, true);
 
     const mFeed = [rssFeed.getFeedItems(WIKI_TEST_FEED)[0]];
     const mPromises = rssFeed.addAllFeedItems(mFeed);

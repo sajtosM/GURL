@@ -19,19 +19,19 @@ class RssFeedHandler {
     * @param {integer} nLimit maximum amount of articles to get
     * @memberof RssFeedHandler
     */
-    constructor(sUrl, nLimit) {
+    constructor(sUrl, nLimit, noLimit) {
         this.sUrl = sUrl;
         this.bIsReddit = /reddit/.test(sUrl);
 
-        this.noLimit = nLimit == undefined;
-        this.nLimit = nLimit < 0 || nLimit == undefined ? 100 : nLimit; //Magic automatic limit 7 😂
+        this.nLimit = nLimit < 0 || nLimit == undefined ? 100 : nLimit;
+        this.noLimit = noLimit == true;
 
         this.sTitle = sUrl;
         this.spinner = ora();
 
         this.mPromises = [];
 
-        this.emailContent = this.getEmailStyle();
+        this.emailContent = '';
         this.mFeedContent = [];
     }
 
@@ -64,13 +64,14 @@ class RssFeedHandler {
             that.spinner = ora(`Getting feed ${that.sUrl}`).start();
             let mFeed = await that.parseFeed();
             that.setTile(mFeed.title);
-            that.spinner.succeed(`Getting feed ${that.sUrl} | ${mFeed.title}`);
-
+            that.emailContent = that.getEmailStyle();
             that.mPromises = [];
             that.mFeedContent = [];
 
-
             let mFeedItems = that.getFeedItems(mFeed.items);
+            that.spinner.succeed(`Getting feed ${that.sUrl} | ${mFeed.title}`);
+
+
 
             that.addAllFeedItems(mFeedItems);
 
@@ -107,11 +108,11 @@ class RssFeedHandler {
     writeToThePath(emailContent) {
         const sDirectory = path.join(__dirname, 'articles/');
         let fullPath = path.join(sDirectory, this.sTitle.replace(/ /gi, '_') + '.html');
-        
-        if (!fs.existsSync(sDirectory)){
+
+        if (!fs.existsSync(sDirectory)) {
             fs.mkdirSync(sDirectory);
         }
-        
+
         fs.writeFileSync(fullPath, emailContent);
     }
 
@@ -218,7 +219,7 @@ class RssFeedHandler {
      * @memberof RssFeedHandler
      */
     sendEmail(emailContent) {
-        return sendEmail(emailContent, `Rss feed - ${this.sUrl}`);
+        return sendEmail(emailContent, `Rss feed - ${this.sTitle}`);
     }
 
     /**
@@ -239,7 +240,14 @@ class RssFeedHandler {
      */
     getEmailStyle() {
         let css = fs.readFileSync(path.join(__dirname, 'css/aboutReader.css'));
-        let emailContent = `<h1>Rss feed - ${this.title}</h1><style>${css}</style>`;
+        let emailContent = `
+        <div class="container content-width3" style="--font-size:22px;">
+            <h1>Rss feed - ${this.sTitle}</h1>
+            <h5>${this.sUrl}</h5>
+            <style>${css}</style>
+        </div>
+        `;
+ 
 
         return emailContent;
     }
