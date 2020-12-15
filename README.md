@@ -4,7 +4,7 @@
 # G.U.R.L.
 > The Grand Unified Read List
 
-## What is the G.U.R.L.?
+# What is the G.U.R.L.?
 G.U.R.L. is a tool to parse RSS feeds into emails.
 
 ## Installation
@@ -19,7 +19,7 @@ Or if you prefer using Yarn:
 ```sh
 yarn install
 ```
-### Setup the email client
+## Setup the email client
 
 Run with `--init` to set up the configuration.
 
@@ -38,7 +38,7 @@ The `config.json` should look like this:
 }
 ```
 
-## Usage
+# Usage
 
 # <img src="media/usage.gif" title="G.U.R.L." alt="G.U.R.L. usage" width="530">
 
@@ -63,7 +63,7 @@ Disable the limitation on read time. The text will not concatenate at 2 Minutes 
 node gurl "https://reddit.com/r/wallstreetbets/.rss" --showAll
 ```
 
-### Cron
+## Cron
 
 Open the `crontab`
 ```sh
