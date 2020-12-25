@@ -9,8 +9,8 @@ const cli = meow(`
 	Options
 	  --init, -i        Initialize the config.json
 	  --noMail, -m      Does not send an email
-	  --showAll, -a     Does not cut the article text
-      --limit, -l       Limit for the read articles
+	  --showAll, -a     Send the full article in the email
+	  --limit, -l       Maximum number of articles to be displayed
       --noSave, -n      Do not save the the html file
 
 	Examples
