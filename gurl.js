@@ -1,16 +1,17 @@
 const meow = require('meow');
 
-const { main } = require('./main');
+const { main } = require('./src/main');
 
 const cli = meow(`
 	Usage
 	  $ node gurl <RSS_URL_input>
 
 	Options
-	  --init, -i  Initialize the config.json
-	  --noMail, -m  Initialize the config.json
-	  --showAll, -a  Initialize the config.json
-	  --limit, -l  Limit for the 
+	  --init, -i        Initialize the config.json
+	  --noMail, -m      Does not send an email
+	  --showAll, -a     Does not cut the article text
+      --limit, -l       Limit for the read articles
+      --noSave, -n      Do not save the the html file
 
 	Examples
 	  $ node gurl --init
@@ -35,6 +36,10 @@ const cli = meow(`
         limit: {
             type: 'number',
             alias: 'l'
+        },
+        noSave: {
+            type: 'boolean',
+            alias: 'n'
         },
     }
 });

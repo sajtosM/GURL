@@ -19,7 +19,7 @@ class RssFeedHandler {
     * @param {integer} nLimit maximum amount of articles to get
     * @memberof RssFeedHandler
     */
-    constructor(sUrl, nLimit, noLimit) {
+    constructor(sUrl, nLimit, noLimit, bNoSaveFile) {
         this.sUrl = sUrl;
         this.bIsReddit = /reddit/.test(sUrl);
 
@@ -33,6 +33,8 @@ class RssFeedHandler {
 
         this.emailContent = '';
         this.mFeedContent = [];
+
+        this.bNoSaveFile = bNoSaveFile;
     }
 
     /**
@@ -90,11 +92,11 @@ class RssFeedHandler {
      * @param {*} getFeedResolver
      * @memberof RssFeedHandler
      */
-    resolePromises(bSendMail) {
+    resolePromises(bSendMail, bNoSaveFile) {
         if (bSendMail) {
             this.spinner.text = 'Sending Email';
             this.sendEmail(this.getHTMLFeedContent());
-        } else {
+        } else if (bNoSaveFile) {
             this.writeToThePath(this.getHTMLFeedContent());
         }
     }
@@ -106,7 +108,7 @@ class RssFeedHandler {
      * @memberof RssFeedHandler
      */
     writeToThePath(emailContent) {
-        const sDirectory = path.join(__dirname, 'articles/');
+        const sDirectory = path.join(__dirname, '../articles/');
         let fullPath = path.join(sDirectory, this.sTitle.replace(/ /gi, '_') + '.html');
 
         if (!fs.existsSync(sDirectory)) {
@@ -240,7 +242,7 @@ class RssFeedHandler {
      * @memberof RssFeedHandler
      */
     getEmailStyle() {
-        let css = fs.readFileSync(path.join(__dirname, 'css/aboutReader.css'));
+        let css = fs.readFileSync(path.join(__dirname, '../data/css/aboutReader.css'));
         let emailContent = `
         <div class="container content-width3" style="--font-size:22px;">
             <h1>Rss feed - ${this.sTitle}</h1>

@@ -32,13 +32,14 @@ function main(cli) {
             });
         });
     } else if (cli.input[0]) {
-        let URL = cli.input[0];
-        let bSendMail = !cli.flags.noMail;
-        let bNoLimit = cli.flags.showAll;
-        let nLimit = cli.flags.limit;
+        const URL = cli.input[0];
+        const bSendMail = !cli.flags.noMail;
+        const bNoLimit = cli.flags.showAll;
+        const nLimit = cli.flags.limit;
+        const bNoSaveFile = cli.flags.noSave;
 
         const rssFeed = new RssFeedHandler(URL, nLimit, bNoLimit);
-        rssFeed.getFeed(bSendMail);
+        rssFeed.getFeed(bSendMail, bNoSaveFile);
     } else {
         cli.showHelp();
     }
