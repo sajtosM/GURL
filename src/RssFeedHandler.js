@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const ora = require('ora');
 
-const { sendEmail } = require('./sendEmail');
+const { EmailHandler } = require('./EmailHandler');
 const { addArticle } = require('./addArticle');
 
 const parser = new Parser();
@@ -95,7 +95,9 @@ class RssFeedHandler {
     resolePromises(bSendMail, bNoSaveFile) {
         if (bSendMail) {
             this.spinner.text = 'Sending Email';
-            this.sendEmail(this.getHTMLFeedContent());
+            let email = new EmailHandler();
+            email.setConfig();
+            email.sendEmail(this.getHTMLFeedContent());
         } else if (bNoSaveFile) {
             this.writeToThePath(this.getHTMLFeedContent());
         }
@@ -214,15 +216,18 @@ class RssFeedHandler {
     }
 
     /**
-     * Uses sendEmail.js to send a mail
+     * Uses EmailHandler to send a mail
      *
      * @param {string} emailContent body of the email
      * @returns {object} result of the email
      * @memberof RssFeedHandler
      */
     sendEmail(emailContent, sTile) {
+        let email = new EmailHandler();
+        email.setConfig();
+        
         sTile = sTile ? sTile : `Rss feed - ${this.sTitle}`;
-        return sendEmail(emailContent, sTile);
+        return email.sendEmail(emailContent, sTile);
     }
 
     /**

@@ -183,3 +183,10 @@ it('Test writing', function () {
     expect(0).toBe(0);
 
 });
+
+it('Test RSS get wikipedia to email, no write', async () => {
+    expect.assertions(1);
+    const rssFeed = new RssFeedHandler('https://hu.wikipedia.org/w/api.php?action=featuredfeed&feed=featured&feedformat=atom', 2);
+    const res = await rssFeed.getFeed(false,false);
+    expect(res).toBeDefined();
+});
