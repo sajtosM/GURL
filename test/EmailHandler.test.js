@@ -16,16 +16,16 @@ it('Test setting the config', function () {
     expect(emailHandler.getTarget()).toBe('test@example.com');
 });
 
-it('Test sending an email.', function () {
-    expect.assertions(2);
-    const emailHandler = new EmailHandler();
-    expect(emailHandler).toBeDefined();
+// it('Test sending an email.', function () {
+//     expect.assertions(2);
+//     const emailHandler = new EmailHandler();
+//     expect(emailHandler).toBeDefined();
 
-    emailHandler.setConfig(true);
+//     emailHandler.setConfig(true);
 
-    let res = emailHandler.sendEmail('Testy testy test','MY best test');
-    expect(res).toBeDefined();
-});
+//     let res = emailHandler.sendEmail('Testy testy test','MY best test');
+//     expect(res).toBeDefined();
+// });
 
 it('Test the email content setting, getting', function () {
     const emailHandler = new EmailHandler();
