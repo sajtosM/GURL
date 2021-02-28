@@ -21,7 +21,7 @@
     "lint": "node_modules/.bin/eslint .",
     "jest": "node_modules/.bin/jest --coverage",
     "test": "npm run lint && npm run jest",
-    "start": "node index.js",
+    "start": "node gurl.js",
     "serve": "node server.js"
   },
   "repository": {
@@ -29,7 +29,9 @@
     "url": "git+https://github.com/sajtosM/GURL.git"
   },
   "keywords": [
-    "Readlist"
+    "Readlist",
+    "rss",
+    "email"
   ],
   "author": "sajtosM",
   "license": "MIT",

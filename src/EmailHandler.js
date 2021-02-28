@@ -30,7 +30,7 @@ class EmailHandler {
             }
         } else {
             this.bDebug = true;
-            this.config = JSON.parse(fs.readFileSync(path.join(__dirname, '../test/config.json')));
+            this.config = JSON.parse(fs.readFileSync(path.join(__dirname, '../test/configTest.json')));
             this.configureTransporter();
         }
     }

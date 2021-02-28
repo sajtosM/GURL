@@ -1,0 +1,7 @@
+{
+    "target": "test@example.com",
+    "auth": {
+        "user": "test@gmail.com",
+        "pass": "test-my-shiny-ass"
+    }
+}
